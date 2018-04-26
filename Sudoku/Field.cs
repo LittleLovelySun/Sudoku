@@ -4,20 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-    
+
 namespace Sudoku {
     class Field {
         public int[,,] matrix;
-        const int n = 9;
-
-        void printMatrix(int[,,] mat, DataGridView data) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    if (mat[i, j, 0] != 0)
-                        data[j, i].Value = mat[i, j, 0];
-                }
-            }
-        }
+        const int n0 = 3;
+        const int n = n0 * n0;
 
         public Field() {
             matrix = new int[n, n, n + 1];
@@ -27,6 +19,31 @@ namespace Sudoku {
                         matrix[i, j, k] = 0;
                 }
             }
+        }
+
+        public int this[int i, int j, int k] {
+            get {
+                return matrix[i, j, k];
+            }
+            set {
+                matrix[i, j, k] = value;
+                Clear(i, j, value);
+            }
+        }
+
+        public void Clear(int i, int j, int s) {
+            for (int k = 0; k < n; k++)
+                if (isEmpty(k, j))
+                    matrix[k, j, s] = s;
+
+            for (int k = 0; k < n; k++)
+                if (isEmpty(i, k))
+                    matrix[i, k, s] = s;
+
+            for (int k = i / n0 * n0; k < i / n0 * n0 + n0; k++)
+                for (int l = j / n0 * n0; l < j / n0 * n0 + n0; l++)
+                    if (isEmpty(k, l))
+                        matrix[k, l, s] = s;
         }
 
         public bool AllFill() {
@@ -44,26 +61,20 @@ namespace Sudoku {
                         matrix[i, j, 0] = 0;
                     } else if (data[j, i].Value.ToString() == "") {
                         matrix[i, j, 0] = 0;
-                    } else {
-                        int res = int.Parse(data[j, i].Value.ToString());
-                        matrix[i, j, 0] = res;
-                        Clear(i, j, res);
-                    }
+                    } else
+                        this[i, j, 0] = int.Parse(data[j, i].Value.ToString());
                 }
             }
         }
 
-        public void Clear(int i, int j, int s) {
-            for (int k = 0; k < n; k++)
-                if (isEmpty(k, j))
-                    matrix[k, j, s] = s;
-            for (int k = 0; k < n; k++)
-                if (isEmpty(i, k))
-                    matrix[i, k, s] = s;
-            for (int k = i / 3 * 3; k < i / 3 * 3 + 3; k++)
-                for (int l = j / 3 * 3; l < j / 3 * 3 + 3; l++)
-                    if (isEmpty(k, l))
-                        matrix[k, l, s] = s;
+        public void read(Field field) {
+            matrix = new int[n, n, n + 1];
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++) {
+                    if (!field.isEmpty(i, j))
+                        this[i, j, 0] = field[i, j, 0];
+
+                }
         }
 
         public bool isEmpty(int i, int j) {
@@ -80,21 +91,19 @@ namespace Sudoku {
                 }
             }
             if (count == 1) {
-                matrix[i, j, 0] = icount;
-                Clear(i, j, icount);
+                this[i, j, 0] = icount;
             }
 
             return count;
         }
 
-        public void Copy(Field Fieald) {
+        public void Copy(Field field) {
             matrix = new int[n, n, n + 1];
 
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < n; j++)
                     for (int k = 0; k < n + 1; k++)
-                        matrix[i, j, k] = Fieald.matrix[i, j, k];
-
+                        matrix[i, j, k] = field[i, j, k];
         }
 
         public bool IsCorrect() {
@@ -109,21 +118,22 @@ namespace Sudoku {
                 }
             }
 
-            for (int i0 = 0; i0 < 3; i0++)
-                for (int j0 = 0; j0 < 3; j0++)
+            for (int i0 = 0; i0 < n0; i0++)
+                for (int j0 = 0; j0 < n0; j0++)
                     for (int i = 0; i < n; i++)
                         for (int j = i + 1; j < n; j++) {
-                            int v1 = matrix[i0 * 3 + i / 3, j0 * 3 + i % 3, 0];
-                            int v2 = matrix[i0 * 3 + j / 3, j0 * 3 + j % 3, 0];
+                            int v1 = matrix[i0 * n0 + i / n0, j0 * n0 + i % n0, 0];
+                            int v2 = matrix[i0 * n0 + j / n0, j0 * n0 + j % n0, 0];
                             if (v1 == v2 && v1 != 0)
                                 return false;
                         }
             return true;
         }
 
-        public bool Fill(DataGridView data, ref Field field, List<Field> list, int deep = 0) {
-            if (list.Count > 10)
+        public bool Fill(ref Field field, List<Field> list, int solutionCount = 10, int deep = 0) {
+            if (list.Count > solutionCount)
                 return false;
+
             if (!field.IsCorrect())
                 return false;
 
@@ -149,35 +159,71 @@ namespace Sudoku {
 
                 if (count > 1) {
                     for (int k = 1; k < n + 1; k++) {
-                        if (field.matrix[indexi, indexj, k] == 0) {
+                        if (field[indexi, indexj, k] == 0) {
                             Field copy = new Field();
                             copy.Copy(field);
 
-                            field.matrix[indexi, indexj, 0] = k;
-                            field.Clear(indexi, indexj, k);
+                            field[indexi, indexj, 0] = k;
 
-                            Fill(data, ref field, list);
+                            Fill(ref field, list, solutionCount);
                             field = copy;
                         }
                     }
-                    if (list.Count > 0)
-                        return true;
-                    return false;
+
+                    return list.Count > 0;
                 }
             }
             list.Add(field);
             return true;
         }
 
-        public List<Field> Solve(DataGridView data) {
+        public List<Field> Solve(int solutionCount = 10) {
             List<Field> list = new List<Field>();
             Field copy = new Field();
             copy.Copy(this);
-            if (Fill(data, ref copy, list))
-                return list;
-            else {
-                return null;
+            Fill(ref copy, list, solutionCount);
+            return list;
+        }
+
+        public Field Generate() {
+            Field field = new Field();
+            Random rnd = new Random();
+
+            for (int s = 1; s < n + 1; s++) {
+                int i, j;
+                do {
+                    i = rnd.Next(n);
+                    j = rnd.Next(n);
+                } while (!field.isEmpty(i, j));
+
+                field[i, j, 0] = s;
             }
+            
+            List<Field> list = field.Solve(100);
+
+            field = list[rnd.Next(list.Count)];
+
+            Field copy = new Field();
+            Field result = new Field();
+
+            int index = n * n;
+
+            do {
+                result.read(field);
+                int i, j, s;
+                do {
+                    i = rnd.Next(n);
+                    j = rnd.Next(n);
+                } while (field.isEmpty(i, j));
+
+                s = field[i, j, 0];
+                field[i, j, 0] = 0;
+                copy.read(field);
+                index--;
+            } while (copy.Solve().Count() == 1 && index > n);
+            
+            return result;
+           // return new Field[2] { field, list.Count == 0 ? null : list[rnd.Next(list.Count)] };
         }
     }
 }

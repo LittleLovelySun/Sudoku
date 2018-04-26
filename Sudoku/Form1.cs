@@ -11,8 +11,16 @@ using System.IO;
 
 namespace Sudoku {
     public partial class Form1 : Form {
-        const int width = 40;
-        const int n = 9;
+        const int n0 = 3;
+        const int n = n0 * n0;
+        const int cellSize = 40;
+
+        Color selectUnchangedCell = Color.FromArgb(195, 230, 226);
+        Color selectChangedCell = Color.FromArgb(123, 200, 194);
+        Color selectDigitCell = Color.FromArgb(210, 214, 239);
+        Color backColor1 = Color.White;
+        Color backColor2 = Color.WhiteSmoke;
+
         List<Field> SolutionList = new List<Field>();
         int ListIndex = 0;
 
@@ -24,6 +32,8 @@ namespace Sudoku {
                         data[j, i].Value = mat[i, j, 0];
                 }
             }
+
+            data.Update();
         }
 
         public Form1() {
@@ -33,43 +43,86 @@ namespace Sudoku {
             backbtn.Visible = false;
             forwardbtn.Visible = false;
             Clearbtn.Visible = false;
+
+            DataField.CellClick += cellClick;
+            DataSolvation.CellClick += cellClick;
+        }
+
+        private void cellClick(object sender, DataGridViewCellEventArgs e) {
+            DataGridView grid = (DataGridView)sender;
+            grid.ClearSelection();
+
+            string value = "";
+
+            if (grid[e.ColumnIndex, e.RowIndex].Value != null)
+                value = grid[e.ColumnIndex, e.RowIndex].Value.ToString();
+
+            for (int j = 0; j < n; j++) {
+                grid[j, e.RowIndex].Selected = true;
+                grid[j, e.RowIndex].Style.SelectionBackColor = selectUnchangedCell;
+            }
+            for (int i = 0; i < n; i++) {
+                grid[e.ColumnIndex, i].Selected = true;
+                grid[e.ColumnIndex, i].Style.SelectionBackColor = selectUnchangedCell;
+            }
+
+            if (value != "") {
+                for (int j = 0; j < n; j++) {
+                    for (int i = 0; i < n; i++) {
+                        if (grid[j, i].Value == null)
+                            continue;
+
+                        if (grid[j, i].Value.ToString() == value) {
+                            grid[j, i].Selected = true;
+                            grid[j, i].Style.SelectionBackColor = selectDigitCell;
+                        }
+                    }
+                }
+            }
+            
+            grid[e.ColumnIndex, e.RowIndex].Style.SelectionBackColor = selectChangedCell;
         }
 
         private void InitGrid(DataGridView data) {
+
             data.Rows.Clear();
             data.Columns.Clear();
 
             for (int i = 0; i < n; i++) {
                 data.Columns.Add(i.ToString(), i.ToString());
-                data.Columns[i].Width = width;
+                data.Columns[i].Width = cellSize;
+                data.RowTemplate.Height = cellSize;
             }
 
             data.Rows.Add(n);
 
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
-                    if (i / 3 != 1) {
-                        if (j / 3 == 1)
-                            data[j, i].Style.BackColor = Color.White;
+                    if (i / n0 != 1) {
+                        if (j / n0 == 1)
+                            data[j, i].Style.BackColor = backColor1;
                         else
-                            data[j, i].Style.BackColor = Color.WhiteSmoke;
+                            data[j, i].Style.BackColor = backColor2;
                     } else {
-                        if (j / 3 == 1)
-                            data[j, i].Style.BackColor = Color.WhiteSmoke;
+                        if (j / n0 == 1)
+                            data[j, i].Style.BackColor = backColor2;
                         else
-                            data[j, i].Style.BackColor = Color.White;
+                            data[j, i].Style.BackColor = backColor1;
                     }
 
+                    data[j, i].Style.SelectionForeColor = Color.Black;
                     data[j, i].Style.Font = new Font("Arial", 12);
                     data[j, i].Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                    data[j, i].Style.SelectionBackColor = Color.Silver;
+                    data[j, i].Style.SelectionBackColor = selectChangedCell;
                 }
             }
 
             data.RowHeadersVisible = false; //скрыть заголовки строк
             data.ColumnHeadersVisible = false; //скрыть заголовки столбцов
-        }    
-        
+            data.ClearSelection();
+
+        }
+
         void Reset() {
             InitGrid(DataField);
             InitGrid(DataSolvation);
@@ -85,7 +138,7 @@ namespace Sudoku {
             Field a = new Field();
             a.read(DataField);
 
-            SolutionList = a.Solve(DataSolvation);
+            SolutionList = a.Solve();
             if (SolutionList.Count == 0) {
                 MessageBox.Show("Нет решений!");
                 return;
@@ -169,6 +222,15 @@ namespace Sudoku {
 
         private void DataField_CellValueChanged(object sender, DataGridViewCellEventArgs e) {
             Clearbtn.Visible = !IsEmpty(DataField) || !IsEmpty(DataSolvation);
+        }
+
+        private void GenerateItem_Click(object sender, EventArgs e) {
+            InitGrid(DataField);
+            InitGrid(DataSolvation);
+
+            Field field = new Field().Generate();
+            printMatrix(field.matrix, DataField);
+                        
         }
     }
 }
