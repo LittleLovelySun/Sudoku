@@ -21,15 +21,20 @@ namespace Sudoku {
         Color backColor1 = Color.White;
         Color backColor2 = Color.WhiteSmoke;
 
+
         List<Field> SolutionList = new List<Field>();
         int ListIndex = 0;
 
-        void printMatrix(int[,,] mat, DataGridView data) {
+        void printMatrix(int[,,] mat, DataGridView data, bool readOnly = false) {
             InitGrid(DataSolvation);
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
-                    if (mat[i, j, 0] != 0)
+                    if (mat[i, j, 0] != 0) {
                         data[j, i].Value = mat[i, j, 0];
+                        data[j, i].ReadOnly = readOnly;
+                        if (readOnly)
+                            data[j, i].Style.Font = new Font("Arial", 12, FontStyle.Bold);
+                    }
                 }
             }
 
@@ -47,6 +52,7 @@ namespace Sudoku {
             DataField.CellClick += cellClick;
             DataSolvation.CellClick += cellClick;
         }
+
 
         private void cellClick(object sender, DataGridViewCellEventArgs e) {
             DataGridView grid = (DataGridView)sender;
@@ -79,12 +85,15 @@ namespace Sudoku {
                     }
                 }
             }
+            else {
+                grid.CurrentCell = grid[e.ColumnIndex, e.RowIndex];
+                grid.BeginEdit(true);
+            }
             
             grid[e.ColumnIndex, e.RowIndex].Style.SelectionBackColor = selectChangedCell;
         }
 
         private void InitGrid(DataGridView data) {
-
             data.Rows.Clear();
             data.Columns.Clear();
 
@@ -123,9 +132,16 @@ namespace Sudoku {
 
         }
 
+        private void ClearDataGrid(DataGridView data) {
+            for (int i = 0; i < n; i++) 
+                for (int j = 0; j < n; j++) {
+                    data[j, i].Value = "";
+                }
+        }
+
         void Reset() {
-            InitGrid(DataField);
-            InitGrid(DataSolvation);
+            ClearDataGrid(DataField);
+            ClearDataGrid(DataSolvation);
             Clearbtn.Visible = false;
             backbtn.Visible = false;
             forwardbtn.Visible = false;
@@ -186,8 +202,7 @@ namespace Sudoku {
                 return;
             }
 
-            InitGrid(DataField);
-            InitGrid(DataSolvation);
+            Reset();
 
             string[] lines = File.ReadAllLines(dialog.FileName);
 
@@ -225,12 +240,13 @@ namespace Sudoku {
         }
 
         private void GenerateItem_Click(object sender, EventArgs e) {
-            InitGrid(DataField);
-            InitGrid(DataSolvation);
-
+            Reset();
             Field field = new Field().Generate();
-            printMatrix(field.matrix, DataField);
-                        
+            printMatrix(field.matrix, DataField, true);
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
+            Environment.Exit(0);
         }
     }
 }

@@ -141,7 +141,7 @@ namespace Sudoku {
                 int count = 10;
                 int indexi = 0;
                 int indexj = 0;
-
+                
                 for (int i = 0; i < n; i++) {
                     for (int j = 0; j < n; j++) {
                         if (field.isEmpty(i, j)) {
@@ -185,7 +185,16 @@ namespace Sudoku {
             return list;
         }
 
-        public Field Generate() {
+        public List<int[]> GetBusy() {
+            List<int[]> ij = new List<int[]>();
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                    if (!isEmpty(i, j)) 
+                        ij.Add(new int[2] { i, j });
+            return ij;
+        } 
+
+        public Field Generate(int diff = 30) {
             Field field = new Field();
             Random rnd = new Random();
 
@@ -201,29 +210,45 @@ namespace Sudoku {
             
             List<Field> list = field.Solve(100);
 
-            field = list[rnd.Next(list.Count)];
+            int indexList = rnd.Next(list.Count);
+            field = list[indexList];
+            list.RemoveAt(indexList);
 
             Field copy = new Field();
             Field result = new Field();
+            result.Copy(field);
 
             int index = n * n;
-
-            do {
-                result.read(field);
-                int i, j, s;
-                do {
-                    i = rnd.Next(n);
-                    j = rnd.Next(n);
-                } while (field.isEmpty(i, j));
-
-                s = field[i, j, 0];
-                field[i, j, 0] = 0;
-                copy.read(field);
-                index--;
-            } while (copy.Solve().Count() == 1 && index > n);
+            int h = 0;
             
+            do {
+                if (h >= n * n / 2) {
+                    indexList = rnd.Next(list.Count);
+                    field = list[indexList];
+                    list.RemoveAt(indexList);
+                    h = 0;
+                    index = n * n;
+                    result.Copy(field);
+
+                } else 
+                    field.read(result);
+                List<int[]> ij = field.GetBusy();
+                index++;
+                do {
+                    result.read(field);
+                    int position = rnd.Next(ij.Count);
+
+                    field[ij[position][0], ij[position][1], 0] = 0;
+                    ij.RemoveAt(position);
+                    copy.read(field);
+                    index--;
+                } while (copy.Solve().Count() == 1 && index > diff - 3);
+                h++;
+                
+           } while (index > diff && list.Count > 0);
+
+            //MessageBox.Show("h = " + h);
             return result;
-           // return new Field[2] { field, list.Count == 0 ? null : list[rnd.Next(list.Count)] };
         }
     }
 }
