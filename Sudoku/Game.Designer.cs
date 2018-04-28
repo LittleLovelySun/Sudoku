@@ -27,13 +27,18 @@
             this.GameField = new System.Windows.Forms.DataGridView();
             this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.newGameItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.DiffMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.OptionItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.NewGameMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.сложностьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EasyMod = new System.Windows.Forms.ToolStripMenuItem();
             this.MediumMod = new System.Windows.Forms.ToolStripMenuItem();
             this.DiffMod = new System.Windows.Forms.ToolStripMenuItem();
             this.EvilMod = new System.Windows.Forms.ToolStripMenuItem();
-            this.ClearItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.BackToMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.текущаяИграToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ClearMod = new System.Windows.Forms.ToolStripMenuItem();
+            this.IsCorrectItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExitItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.GameField)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -53,7 +58,7 @@
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.GameField.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.GameField.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.GameField.Location = new System.Drawing.Point(12, 89);
+            this.GameField.Location = new System.Drawing.Point(12, 81);
             this.GameField.Name = "GameField";
             this.GameField.RowTemplate.Height = 40;
             this.GameField.ScrollBars = System.Windows.Forms.ScrollBars.None;
@@ -68,7 +73,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Symbol", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
-            this.label1.Location = new System.Drawing.Point(270, 33);
+            this.label1.Location = new System.Drawing.Point(270, 34);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(105, 34);
             this.label1.TabIndex = 4;
@@ -77,79 +82,120 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.newGameItem,
-            this.ClearItem});
+            this.OptionItem,
+            this.текущаяИграToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(390, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(387, 24);
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // newGameItem
+            // OptionItem
             // 
-            this.newGameItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.DiffMenu});
-            this.newGameItem.Name = "newGameItem";
-            this.newGameItem.Size = new System.Drawing.Size(81, 20);
-            this.newGameItem.Text = "Новая игра";
+            this.OptionItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.NewGameMenuItem,
+            this.BackToMenu,
+            this.ExitItem});
+            this.OptionItem.Name = "OptionItem";
+            this.OptionItem.Size = new System.Drawing.Size(56, 20);
+            this.OptionItem.Text = "Опции";
             // 
-            // DiffMenu
+            // NewGameMenuItem
             // 
-            this.DiffMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.NewGameMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.сложностьToolStripMenuItem});
+            this.NewGameMenuItem.Name = "NewGameMenuItem";
+            this.NewGameMenuItem.Size = new System.Drawing.Size(153, 22);
+            this.NewGameMenuItem.Text = "Новая игра";
+            // 
+            // сложностьToolStripMenuItem
+            // 
+            this.сложностьToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.EasyMod,
             this.MediumMod,
             this.DiffMod,
             this.EvilMod});
-            this.DiffMenu.Name = "DiffMenu";
-            this.DiffMenu.Size = new System.Drawing.Size(136, 22);
-            this.DiffMenu.Text = "Сложность";
+            this.сложностьToolStripMenuItem.Name = "сложностьToolStripMenuItem";
+            this.сложностьToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
+            this.сложностьToolStripMenuItem.Text = "Сложность";
             // 
             // EasyMod
             // 
             this.EasyMod.Name = "EasyMod";
-            this.EasyMod.Size = new System.Drawing.Size(176, 22);
+            this.EasyMod.Size = new System.Drawing.Size(169, 22);
             this.EasyMod.Text = "Легко";
-            this.EasyMod.Click += new System.EventHandler(this.EasyMod_Click);
+            this.EasyMod.Click += new System.EventHandler(this.EasyMod_Click_1);
             // 
             // MediumMod
             // 
             this.MediumMod.Name = "MediumMod";
-            this.MediumMod.Size = new System.Drawing.Size(176, 22);
+            this.MediumMod.Size = new System.Drawing.Size(169, 22);
             this.MediumMod.Text = "Умеренно";
             this.MediumMod.Click += new System.EventHandler(this.MediumMod_Click);
             // 
             // DiffMod
             // 
             this.DiffMod.Name = "DiffMod";
-            this.DiffMod.Size = new System.Drawing.Size(176, 22);
+            this.DiffMod.Size = new System.Drawing.Size(169, 22);
             this.DiffMod.Text = "Сложно";
             this.DiffMod.Click += new System.EventHandler(this.DiffMod_Click);
             // 
             // EvilMod
             // 
             this.EvilMod.Name = "EvilMod";
-            this.EvilMod.Size = new System.Drawing.Size(176, 22);
-            this.EvilMod.Text = "Оооочень сложно";
+            this.EvilMod.Size = new System.Drawing.Size(169, 22);
+            this.EvilMod.Text = "Ооочень сложно";
             this.EvilMod.Click += new System.EventHandler(this.EvilMod_Click);
             // 
-            // ClearItem
+            // BackToMenu
             // 
-            this.ClearItem.Name = "ClearItem";
-            this.ClearItem.Size = new System.Drawing.Size(100, 20);
-            this.ClearItem.Text = "Сбросить ввод";
-            this.ClearItem.Click += new System.EventHandler(this.ClearItem_Click);
+            this.BackToMenu.Name = "BackToMenu";
+            this.BackToMenu.Size = new System.Drawing.Size(153, 22);
+            this.BackToMenu.Text = "Выйти в меню";
+            this.BackToMenu.Click += new System.EventHandler(this.BackToMenu_Click);
+            // 
+            // текущаяИграToolStripMenuItem
+            // 
+            this.текущаяИграToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ClearMod,
+            this.IsCorrectItem});
+            this.текущаяИграToolStripMenuItem.Name = "текущаяИграToolStripMenuItem";
+            this.текущаяИграToolStripMenuItem.Size = new System.Drawing.Size(95, 20);
+            this.текущаяИграToolStripMenuItem.Text = "Текущая игра";
+            // 
+            // ClearMod
+            // 
+            this.ClearMod.Name = "ClearMod";
+            this.ClearMod.Size = new System.Drawing.Size(212, 22);
+            this.ClearMod.Text = "Сбросить ввод";
+            this.ClearMod.Click += new System.EventHandler(this.ClearToCorrect_Click);
+            // 
+            // IsCorrectItem
+            // 
+            this.IsCorrectItem.Name = "IsCorrectItem";
+            this.IsCorrectItem.Size = new System.Drawing.Size(212, 22);
+            this.IsCorrectItem.Text = "Проверить корректность";
+            this.IsCorrectItem.Click += new System.EventHandler(this.IsCorrectItem_Click);
+            // 
+            // ExitItem
+            // 
+            this.ExitItem.Name = "ExitItem";
+            this.ExitItem.Size = new System.Drawing.Size(153, 22);
+            this.ExitItem.Text = "Выйти";
+            this.ExitItem.Click += new System.EventHandler(this.ExitItem_Click);
             // 
             // Game
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(390, 476);
+            this.ClientSize = new System.Drawing.Size(387, 457);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.GameField);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Game";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Судоку";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Game_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.GameField)).EndInit();
@@ -165,12 +211,17 @@
         private System.Windows.Forms.DataGridView GameField;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem newGameItem;
-        private System.Windows.Forms.ToolStripMenuItem ClearItem;
-        private System.Windows.Forms.ToolStripMenuItem DiffMenu;
+        private System.Windows.Forms.ToolStripMenuItem OptionItem;
+        private System.Windows.Forms.ToolStripMenuItem NewGameMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem BackToMenu;
+        private System.Windows.Forms.ToolStripMenuItem сложностьToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem EasyMod;
         private System.Windows.Forms.ToolStripMenuItem MediumMod;
         private System.Windows.Forms.ToolStripMenuItem DiffMod;
         private System.Windows.Forms.ToolStripMenuItem EvilMod;
+        private System.Windows.Forms.ToolStripMenuItem текущаяИграToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ClearMod;
+        private System.Windows.Forms.ToolStripMenuItem IsCorrectItem;
+        private System.Windows.Forms.ToolStripMenuItem ExitItem;
     }
 }

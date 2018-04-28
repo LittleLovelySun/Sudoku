@@ -16,7 +16,7 @@ namespace Sudoku {
 
         private void Gamebtn_Click(object sender, EventArgs e) {
             this.Hide();
-            Game game = new Game();
+            Game game = new Game(this);
             game.ShowDialog();
         }
 
@@ -24,7 +24,6 @@ namespace Sudoku {
             this.Hide();
             Form1 solve = new Form1();
             solve.ShowDialog();
-        }
-        
+        }        
     }
 }

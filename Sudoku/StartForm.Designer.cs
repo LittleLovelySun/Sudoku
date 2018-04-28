@@ -82,6 +82,7 @@
             this.ForeColor = System.Drawing.SystemColors.MenuHighlight;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "StartForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Судоку";
             this.ResumeLayout(false);
             this.PerformLayout();

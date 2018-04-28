@@ -29,16 +29,31 @@ namespace Sudoku {
         long time;
         Timer timer = new Timer();
 
-        public Game() {
+        Timer timerToCorrectItem = new Timer();
+        StartForm startForm = null;
+
+        public Game(StartForm startForm) {
             InitializeComponent();
             InitGrid(GameField);
+
+            this.startForm = startForm;
+
+            timerToCorrectItem.Interval = 60 * 1000;
+            timerToCorrectItem.Tick += TimerToCorrectItem_Tick;
+
             timer.Interval = 1000;
             timer.Tick += sudokuTime;
             timer.Start();
             time = 0;
             label1.Text = "";
-            printMatrix((new Field()).Generate().matrix, GameField, true);
+            printMatrix((new Field()).Generate(diff).matrix, GameField, true);
         }
+
+        private void TimerToCorrectItem_Tick(object sender, EventArgs e) {
+            timerToCorrectItem.Stop();
+            IsCorrectItem.Enabled = true;
+        }
+
         private void InitGrid(DataGridView data) {
             for (int i = 0; i < n; i++) {
                 data.Columns.Add(new DataGridViewColumn(new DataGridViewTextBoxCell()));
@@ -83,7 +98,6 @@ namespace Sudoku {
         }
 
         void printMatrix(int[,,] mat, DataGridView data, bool readOnly = false) {
-            InitGrid(data);
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
                     if (mat[i, j, 0] != 0) {
@@ -100,7 +114,6 @@ namespace Sudoku {
 
             data.Update();
         }
-
 
         private void sudokuTime(object sender, EventArgs e) {
             time++;
@@ -150,34 +163,33 @@ namespace Sudoku {
         }
 
         private void ClearToCorrect_Click(object sender, EventArgs e) {
-           
-        }
-
-        private void Game_FormClosing(object sender, FormClosingEventArgs e) {
-            Environment.Exit(0);
-        }
-
-        void NewGame(int diff) { 
-            DialogResult result = MessageBox.Show("Решить новую судоку? ", "Новая игра", MessageBoxButtons.YesNo);
-            if (result == DialogResult.Yes) {
-
-                timer.Start();
-                time = 0;
-                Field field = new Field().Generate(diff);
-                printMatrix(field.matrix, GameField, true);
-            }
-        }
-
-        private void ClearItem_Click(object sender, EventArgs e) {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
+                    GameField.EndEdit();
                     if (!GameField[j, i].ReadOnly)
                         GameField[j, i].Value = "";
                 }
             }
         }
 
-        private void EasyMod_Click(object sender, EventArgs e) {
+        private void Game_FormClosing(object sender, FormClosingEventArgs e) {
+            startForm.Show();
+        }
+
+        void NewGame(int diff) { 
+            DialogResult result = MessageBox.Show("Решить новую судоку? ", "Новая игра", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes) {
+                timerToCorrectItem.Stop();
+                IsCorrectItem.Enabled = true;
+                
+                Field field = new Field().Generate(diff);
+                printMatrix(field.matrix, GameField, true);
+                timer.Start();
+                time = 0;
+            }
+        }
+        
+        private void EasyMod_Click_1(object sender, EventArgs e) {
             diff = easydiff;
             NewGame(diff);
         }
@@ -226,6 +238,28 @@ namespace Sudoku {
                 } else {
                     MessageBox.Show("Упс...Что-то пошло не так");
                 }
+            }
+        }
+
+        private void IsCorrectItem_Click(object sender, EventArgs e) {
+            IsCorrectItem.Enabled = false;
+            timerToCorrectItem.Start();
+
+            Field field = new Field();
+            field.read(GameField);
+
+            MessageBox.Show((field.IsCorrect()) ? "Проверка на корректность успешно пройдена" : "Не пройдена проверка на корректность. Проверьте своё поле!", "Корректно?");
+        }
+
+        private void BackToMenu_Click(object sender, EventArgs e) {
+            if (MessageBox.Show("Вы уверены, что хотите выйти в меню?", "Требуется подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes) {
+                Close();
+            }
+        }
+
+        private void ExitItem_Click(object sender, EventArgs e) {
+            if (MessageBox.Show("Вы уверены, что хотите выйти?", "Требуется подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes) {
+                startForm.Close();
             }
         }
     }
