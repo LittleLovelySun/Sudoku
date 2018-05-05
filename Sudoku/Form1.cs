@@ -25,6 +25,8 @@ namespace Sudoku {
         List<Field> SolutionList = new List<Field>();
         int ListIndex = 0;
 
+        StartForm startForm;
+
         void printMatrix(int[,,] mat, DataGridView data, bool readOnly = false) {
             InitGrid(DataSolvation);
             for (int i = 0; i < n; i++) {
@@ -41,7 +43,7 @@ namespace Sudoku {
             data.Update();
         }
 
-        public Form1() {
+        public Form1(StartForm startForm) {
             InitializeComponent();
             InitGrid(DataField);
             InitGrid(DataSolvation);
@@ -49,6 +51,7 @@ namespace Sudoku {
             forwardbtn.Visible = false;
             Clearbtn.Visible = false;
 
+            this.startForm = startForm;
             DataField.CellClick += cellClick;
             DataSolvation.CellClick += cellClick;
         }
@@ -246,7 +249,20 @@ namespace Sudoku {
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
-            Environment.Exit(0);
+            startForm.Show();
+
+        }
+
+        private void BackToMenu_Click(object sender, EventArgs e) {
+            if (MessageBox.Show("Вы уверены, что хотите выйти в меню?", "Требуется подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes) {
+                Close();
+            }
+        }
+
+        private void Exit_Click(object sender, EventArgs e) {
+            if (MessageBox.Show("Вы уверены, что хотите выйти?", "Требуется подтверждение", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes) {
+                startForm.Close();
+            }
         }
     }
 }

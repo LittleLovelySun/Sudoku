@@ -22,7 +22,7 @@ namespace Sudoku {
 
         private void Solvebtn_Click(object sender, EventArgs e) {
             this.Hide();
-            Form1 solve = new Form1();
+            Form1 solve = new Form1(this);
             solve.ShowDialog();
         }        
     }

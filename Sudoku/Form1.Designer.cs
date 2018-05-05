@@ -25,6 +25,7 @@
         private void InitializeComponent() {
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.DataField = new System.Windows.Forms.DataGridView();
             this.Solve = new System.Windows.Forms.Button();
             this.DataSolvation = new System.Windows.Forms.DataGridView();
@@ -34,6 +35,8 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.InsertFromFileItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GenerateItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.BackToMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.Exit = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.DataField)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.DataSolvation)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -130,7 +133,9 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.InsertFromFileItem,
-            this.GenerateItem});
+            this.GenerateItem,
+            this.BackToMenu,
+            this.Exit});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(812, 24);
@@ -151,6 +156,20 @@
             this.GenerateItem.Text = "Сгенерить судоку";
             this.GenerateItem.Click += new System.EventHandler(this.GenerateItem_Click);
             // 
+            // BackToMenu
+            // 
+            this.BackToMenu.Name = "BackToMenu";
+            this.BackToMenu.Size = new System.Drawing.Size(98, 20);
+            this.BackToMenu.Text = "Выйти в меню";
+            this.BackToMenu.Click += new System.EventHandler(this.BackToMenu_Click);
+            // 
+            // Exit
+            // 
+            this.Exit.Name = "Exit";
+            this.Exit.Size = new System.Drawing.Size(54, 20);
+            this.Exit.Text = "Выйти";
+            this.Exit.Click += new System.EventHandler(this.Exit_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -164,7 +183,9 @@
             this.Controls.Add(this.DataField);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Судоку";
@@ -189,6 +210,8 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem InsertFromFileItem;
         private System.Windows.Forms.ToolStripMenuItem GenerateItem;
+        private System.Windows.Forms.ToolStripMenuItem BackToMenu;
+        private System.Windows.Forms.ToolStripMenuItem Exit;
     }
 }
 
